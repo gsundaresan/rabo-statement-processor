@@ -14,6 +14,8 @@ import com.rabo.transactions.model.Record;
 import com.rabo.transactions.service.StatementRecordsValidatorServiceImpl;
 import com.rabo.transactions.utils.RaboProcessor;
 
+import junit.framework.Assert;
+
 public class TestReadFiles {
 	
 	RaboProcessor raboProcessor;
@@ -42,6 +44,7 @@ public class TestReadFiles {
 		        "194261,NL91RABO0315273637,Clothes from Jan Bakker,21.6,-41.83,-20.23").getBytes()
 		      );
 		records = raboProcessor.readCsv(file);
+		Assert.assertEquals(1, records.size());
 	}
 	
 	@Test
@@ -61,6 +64,7 @@ public class TestReadFiles {
 		        		"</records>").getBytes("UTF-8")
 		      );
 		records = raboProcessor.readXml(file);
+		Assert.assertEquals(1, records.size());
 	}
 	
 	@Test
@@ -73,6 +77,7 @@ public class TestReadFiles {
 		        "194261,NL91RABO0315273637,Clothes from Jan Bakker,21.6,-41.83,-20.23").getBytes()
 		      );
 		failed = statementRecordsValidator.validate(file);
+		Assert.assertEquals(0, failed.size());
 	}
 	
 	@Test
@@ -92,6 +97,7 @@ public class TestReadFiles {
 		        		"</records>").getBytes("UTF-8")
 		      );
 		failed = statementRecordsValidator.validate(file);
+		Assert.assertEquals(0, failed.size());
 	}
 	
 	@Test(expected = FileFormatException.class)
@@ -103,6 +109,7 @@ public class TestReadFiles {
 		        ("test text").getBytes()
 		      );
 		failed = statementRecordsValidator.validate(file);
+		Assert.assertEquals(0, failed.size());
 	}
 	
 }

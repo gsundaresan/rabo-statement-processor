@@ -1,6 +1,5 @@
 package com.rabo.transactions.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -37,8 +36,8 @@ public class StatementRecordsValidatorServiceImpl implements StatementRecordsVal
 	 *The base service function validates for the supported file extension(csv/xml) if not File format(Custom) exception is logged and thrown
 	 */
 	public List<FailedRecords>validate(MultipartFile dataFile) throws Exception{
-		List<Record> records = new ArrayList<>();
-		List<FailedRecords> failed = new ArrayList<>();
+		List<Record> records;
+		List<FailedRecords> failed;
 		if(RaboConstants.CSV_EXTENSION.equalsIgnoreCase(FilenameUtils.getExtension(dataFile.getOriginalFilename()))) {
 			records = raboFileReaderUtils.readCsv(dataFile);
 		}else if(RaboConstants.XML_EXTENSION.equalsIgnoreCase(FilenameUtils.getExtension(dataFile.getOriginalFilename()))){

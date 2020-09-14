@@ -69,9 +69,7 @@ public class RaboProcessor {
 		List<FailedRecords> failed = new ArrayList<>();
 		try {
 			records.forEach(r->{
-				if(reference.contains(r.getReference())) {
-					failed.add(new FailedRecords(Integer.parseInt(r.getReference()), r.getDescription()));
-				}else if(calculateFloat(Float.parseFloat(r.getStartBalance()) , Float.parseFloat(r.getMutation())) != Float.parseFloat(r.getEndBalance())) {
+				if(reference.contains(r.getReference()) || calculateFloat(Float.parseFloat(r.getStartBalance()) , Float.parseFloat(r.getMutation())) != Float.parseFloat(r.getEndBalance())) {
 					failed.add(new FailedRecords(Integer.parseInt(r.getReference()), r.getDescription()));
 				}
 				reference.add(r.getReference());

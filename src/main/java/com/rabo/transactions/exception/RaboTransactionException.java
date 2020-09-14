@@ -6,8 +6,8 @@ package com.rabo.transactions.exception;
  */
 public class RaboTransactionException extends RuntimeException{
 
-	public RaboTransactionException() {
-		// TODO Auto-generated constructor stub
+	public RaboTransactionException(String message) {
+		super(message);
 	}
 	
 	public RaboTransactionException(String message, Throwable t) {

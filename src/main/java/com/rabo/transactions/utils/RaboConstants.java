@@ -13,4 +13,8 @@ public class RaboConstants {
 	public static final String XML_EXTENSION = "xml";
 	
 	public static final int FLOAT_MULTIPLICATION_FACTOR = 1000; 
+	
+	private RaboConstants() {
+		
+	}
 }
