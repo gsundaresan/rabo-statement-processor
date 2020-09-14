@@ -6,7 +6,7 @@ The main functions covered as part of this assignment involves the following:
 
 1. All transaction references should be unique irrespective of accounts.
 
-2. The end balance needs to be validated based on ipening balance and mutation.
+2. The end balance needs to be validated based on opening balance and mutation.
 #######################################################################################################################################
 API Documentation:
 
