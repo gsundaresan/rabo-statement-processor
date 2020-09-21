@@ -7,17 +7,15 @@ import java.util.Set;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.rabo.transactions.exception.RaboReadException;
 import com.rabo.transactions.exception.RaboTransactionException;
 import com.rabo.transactions.model.FailedRecords;
 import com.rabo.transactions.model.Record;
+import com.rabo.transactions.reader.CsvStatementReader;
+import com.rabo.transactions.reader.StatementReader;
+import com.rabo.transactions.reader.XmlStatementReader;
 
 /**
  * @author guhans
@@ -26,38 +24,33 @@ import com.rabo.transactions.model.Record;
 @Component
 public class RaboProcessor {
 	
-	private static final Logger LOGGER = LogManager.getLogger(RaboProcessor.class);
-
-	/**
-	 * csvMapper from Jackson library is used to read the csv file, with the assumption that the first line is Column Name.
-	 *converting/transforming it to the Record List object
-	 *We have selected Jackson library because of the fact that it is thread safe.
-	 */
-	public List<Record> readCsv(MultipartFile csvFile){
-		try {
-	        CsvSchema bootstrapSchema = CsvSchema.emptySchema().withHeader();
-	        CsvMapper mapper = new CsvMapper();
-	        MappingIterator<Record> readValues = mapper.reader().forType(Record.class).with(bootstrapSchema).readValues(csvFile.getInputStream());
-	        return readValues.readAll();
-	    } catch (Exception e) {
-	    	LOGGER.error(RaboConstants.RABO_READ_EXCEPTION + csvFile.getName(), e);
-	        throw new RaboReadException(RaboConstants.RABO_READ_EXCEPTION + csvFile.getName(),e);
-	    }
+	CsvStatementReader csvStatementReader;
+	XmlStatementReader xmlStatementReader;
+	
+	@Autowired
+	public RaboProcessor(CsvStatementReader csvStatementReader, XmlStatementReader xmlStatementReader){
+		this.csvStatementReader = csvStatementReader;
+		this.xmlStatementReader = xmlStatementReader;
 	}
-
+	
+	
+	private static final Logger LOGGER = LogManager.getLogger(RaboProcessor.class);
+	
 	/**
-	 * xmlMapper from Jackson library is used to read the xml file, converting/transforming it to the Record List object.
+	 * Factory implementation to identify the type of reader to be loaded upon request
 	 *
 	 */
-	public List<Record> readXml(MultipartFile xmlFile){
-		try {
-			XmlMapper xmlMapper = new XmlMapper();
-			MappingIterator<Record> readValues =  xmlMapper.readerFor(Record.class).readValues(xmlFile.getInputStream());
-	        return readValues.readAll();
-	    } catch (Exception e) {
-	    	LOGGER.error(RaboConstants.RABO_READ_EXCEPTION + xmlFile.getName(), e);
-	        throw new RaboReadException(RaboConstants.RABO_READ_EXCEPTION + xmlFile.getName(),e);
-	    }
+	public StatementReader getReader(String fileExtension) {
+		switch(fileExtension) {
+		case RaboConstants.CSV_EXTENSION :
+			return csvStatementReader; // Here I can also return new Reader instance instead of autowired singleton instance 
+//			but it will cause linear increase in number of reader instances with respect to number of requests coming in, 
+//			In that case we will have to establish some kind of control by limiting the concurrency parameters
+		case RaboConstants.XML_EXTENSION :
+			return xmlStatementReader;
+		default :
+			throw new RaboTransactionException(RaboConstants.RABO_FILEFORMAT_EXCEPTION);
+		}
 	}
 	
 	/**
@@ -83,7 +76,7 @@ public class RaboProcessor {
 		
 	/**
 	 * Float arithmetic operations have a failure factor of two to three decimal places, hence we are providing a special workaround.
-	 * Here we are removing this factor of 3 decimal places by mutiplying the operands by a factor of 1000 and then nullifying the offset by dividing the result again by the same number.
+	 * Here we are removing this factor of 3 decimal places by multiplying the operands by a factor of 1000 and then nullifying the offset by dividing the result again by the same number.
 	 * The offset factor can be further increased if necessary
 	 */
 	private float calculateFloat(float f1, float f2) {

@@ -8,11 +8,15 @@ public class RaboConstants {
 	
 	public static final String RABO_FILEFORMAT_EXCEPTION = "The provided file format is not supported: ";
 	
-	public static final String CSV_EXTENSION = "csv";
+	public static final String CSV_EXTENSION = "CSV";
 	
-	public static final String XML_EXTENSION = "xml";
+	public static final String XML_EXTENSION = "XML";
 	
 	public static final int FLOAT_MULTIPLICATION_FACTOR = 1000; 
+	
+	public static final String RABO_TRANSACTION_SUCCESS_MESSAGE = "VALIDATION SUCCEEDED FOR ALL TRANSACTIONS";
+	
+	public static final String RABO_TRANSACTION_FAILED_MESSAGE = "VALIDATION FAILED FOR FOLLOWING TRANSACTIONS";
 	
 	private RaboConstants() {
 		

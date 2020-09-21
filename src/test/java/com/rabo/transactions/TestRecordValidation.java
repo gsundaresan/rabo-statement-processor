@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import com.rabo.transactions.model.FailedRecords;
 import com.rabo.transactions.model.Record;
+import com.rabo.transactions.reader.CsvStatementReader;
+import com.rabo.transactions.reader.XmlStatementReader;
 import com.rabo.transactions.utils.RaboProcessor;
 
 import junit.framework.Assert;
@@ -16,12 +18,14 @@ public class TestRecordValidation {
 	
 	RaboProcessor raboProcessor;
 	Record record;
+	CsvStatementReader csvStatementReader = new CsvStatementReader();
+	XmlStatementReader xmlStatementReader = new XmlStatementReader();
 	List<Record> records;
 	List<FailedRecords> failedRecords;
 	
 	@Before
 	public void preTest() {
-		raboProcessor = new RaboProcessor();
+		raboProcessor = new RaboProcessor(csvStatementReader,xmlStatementReader);
 		records = new ArrayList<>();
 	}
 	
