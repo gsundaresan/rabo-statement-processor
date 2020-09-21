@@ -16,7 +16,9 @@ However we will outline the basic API definition here:
 API: POST::/api/v1/statementprocessor/validateStatements
 
 The request body requires a file to be uploaded(multipart)
-This implementation supports only csv and xml files. The api responds with a json response of transaction reference and description of each of the failed records.
+This implementation supports only csv and xml files. The api responds with a json response of 
+status message- denoting the status of the validation, 
+transaction reference and description of each of the failed records.
 #######################################################################################################################################
 Libraries/Frameworks Used:
 
